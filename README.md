@@ -10,18 +10,17 @@ Images following the same versioning as the upstream repo.
 ### Operator
 
 ```
-docker pull docker.io/rmb938/prometheus-operator-multi-arch:$VERSION
+docker pull docker.io/joelws/prometheus-operator:$VERSION
 ```
 
 ### Prometheus Config Reloader
 
 ```
-docker pull docker.io/rmb938/prometheus-config-reloader-multi-arch:$VERSION
+docker pull docker.io/joelws/prometheus-config-reloader:$VERSION
 ```
 
 ## Supported Architectures 
 
-* amd64
 * arm (arv7/armfh) - Tested on Rasbian Buster
 * arm64 - Tested on Ubuntu 20.04 Raspberry Pi 
 

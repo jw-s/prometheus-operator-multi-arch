@@ -10,7 +10,6 @@ jobs:
     strategy:
       matrix:
         arch:
-          - amd64
           - arm
           - arm64
         version:
@@ -41,8 +40,8 @@ jobs:
           GIT_VERSION: ${{ matrix.version }}
         if: matrix.arch != 'arm'
         run: |
-          docker build -t docker.io/rmb938/prometheus-operator-multi-arch:$GIT_VERSION-$ARCH --build-arg ARCH=$ARCH --build-arg OS=linux .
-          docker build -t docker.io/rmb938/prometheus-config-reloader-multi-arch:$GIT_VERSION-$ARCH --build-arg ARCH=$ARCH --build-arg OS=linux -f cmd/prometheus-config-reloader/Dockerfile .
+          docker build -t docker.io/joelws/prometheus-operator:$GIT_VERSION-$ARCH --build-arg ARCH=$ARCH --build-arg OS=linux .
+          docker build -t docker.io/joelws/prometheus-config-reloader:$GIT_VERSION-$ARCH --build-arg ARCH=$ARCH --build-arg OS=linux -f cmd/prometheus-config-reloader/Dockerfile .
 
       - name: Build Docker ARM
         env:
@@ -50,8 +49,8 @@ jobs:
           GIT_VERSION: ${{ matrix.version }}
         if: matrix.arch == 'arm'
         run: |
-          docker build -t docker.io/rmb938/prometheus-operator-multi-arch:$GIT_VERSION-$ARCH --build-arg ARCH=armv7 --build-arg OS=linux .
-          docker build -t docker.io/rmb938/prometheus-config-reloader-multi-arch:$GIT_VERSION-$ARCH --build-arg ARCH=armv7 --build-arg OS=linux -f cmd/prometheus-config-reloader/Dockerfile .
+          docker build -t docker.io/joelws/prometheus-operator:$GIT_VERSION-$ARCH --build-arg ARCH=armv7 --build-arg OS=linux .
+          docker build -t docker.io/joelws/prometheus-config-reloader:$GIT_VERSION-$ARCH --build-arg ARCH=armv7 --build-arg OS=linux -f cmd/prometheus-config-reloader/Dockerfile .
 
       - name: Docker Publish
         env:
@@ -61,8 +60,8 @@ jobs:
           GIT_VERSION: ${{ matrix.version }}
         run: |
           echo $TOKEN | docker login -u $USER --password-stdin
-          docker push docker.io/rmb938/prometheus-operator-multi-arch:$GIT_VERSION-$ARCH
-          docker push docker.io/rmb938/prometheus-config-reloader-multi-arch:$GIT_VERSION-$ARCH
+          docker push docker.io/joelws/prometheus-operator:$GIT_VERSION-$ARCH
+          docker push docker.io/joelws/prometheus-config-reloader:$GIT_VERSION-$ARCH
 
       
   push-manifest:
@@ -84,12 +83,10 @@ jobs:
           GIT_VERSION: ${{ matrix.version }}
         run: |
           echo $TOKEN | docker login -u $USER --password-stdin
-          DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create -a "docker.io/rmb938/prometheus-operator-multi-arch:$GIT_VERSION" "docker.io/rmb938/prometheus-operator-multi-arch:$GIT_VERSION-amd64" "docker.io/rmb938/prometheus-operator-multi-arch:$GIT_VERSION-arm" "docker.io/rmb938/prometheus-operator-multi-arch:$GIT_VERSION-arm64"
-          DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate --arch arm "docker.io/rmb938/prometheus-operator-multi-arch:$GIT_VERSION" "docker.io/rmb938/prometheus-operator-multi-arch:$GIT_VERSION-arm"
-          DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate --arch arm64 "docker.io/rmb938/prometheus-operator-multi-arch:$GIT_VERSION" "docker.io/rmb938/prometheus-operator-multi-arch:$GIT_VERSION-arm64"
-          DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push "docker.io/rmb938/prometheus-operator-multi-arch:$GIT_VERSION"
+          DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create -a "docker.io/joelws/prometheus-operator:$GIT_VERSION" "docker.io/joelws/prometheus-operator:$GIT_VERSION-arm" "docker.io/joelws/prometheus-operator:$GIT_VERSION-arm64"
+          DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate --arch arm "docker.io/rmb938/prometheus-operator:$GIT_VERSION" "docker.io/joelws/prometheus-operator:$GIT_VERSION-arm"
+          DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate --arch arm64 "docker.io/rmb938/prometheus-operator:$GIT_VERSION" "docker.io/joelws/prometheus-operator:$GIT_VERSION-arm64"
+          DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push "docker.io/joelws/prometheus-operator:$GIT_VERSION"
 
-          DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create -a "docker.io/rmb938/prometheus-config-reloader-multi-arch:$GIT_VERSION" "docker.io/rmb938/prometheus-config-reloader-multi-arch:$GIT_VERSION-amd64" "docker.io/rmb938/prometheus-config-reloader-multi-arch:$GIT_VERSION-arm" "docker.io/rmb938/prometheus-config-reloader-multi-arch:$GIT_VERSION-arm64"
-          DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate --arch arm "docker.io/rmb938/prometheus-config-reloader-multi-arch:$GIT_VERSION" "docker.io/rmb938/prometheus-config-reloader-multi-arch:$GIT_VERSION-arm"
-          DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate --arch arm64 "docker.io/rmb938/prometheus-config-reloader-multi-arch:$GIT_VERSION" "docker.io/rmb938/prometheus-config-reloader-multi-arch:$GIT_VERSION-arm64"
-          DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push "docker.io/rmb938/prometheus-config-reloader-multi-arch:$GIT_VERSION"
+          DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create -a "docker.io/joelws/prometheus-config-reloader:$GIT_VERSION" "docker.io/joelws/prometheus-config-reloader:$GIT_VERSION-arm" "docker.io/joelws/prometheus-config-reloader:$GIT_VERSION-arm64"
+          DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push "docker.io/joelws/prometheus-config-reloader:$GIT_VERSION"
