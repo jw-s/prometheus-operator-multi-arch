@@ -16,6 +16,7 @@ jobs:
           - v0.37.0
           - v0.38.0
           - v0.38.1
+          - v0.39.0
 
     name: Docker Build and Push
     runs-on: ubuntu-latest
@@ -73,6 +74,7 @@ jobs:
           - v0.37.0
           - v0.38.0
           - v0.38.1
+          - v0.39.0
 
     runs-on: ubuntu-latest
     steps:
@@ -84,8 +86,8 @@ jobs:
         run: |
           echo $TOKEN | docker login -u $USER --password-stdin
           DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create -a "docker.io/joelws/prometheus-operator:$GIT_VERSION" "docker.io/joelws/prometheus-operator:$GIT_VERSION-arm" "docker.io/joelws/prometheus-operator:$GIT_VERSION-arm64"
-          DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate --arch arm "docker.io/rmb938/prometheus-operator:$GIT_VERSION" "docker.io/joelws/prometheus-operator:$GIT_VERSION-arm"
-          DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate --arch arm64 "docker.io/rmb938/prometheus-operator:$GIT_VERSION" "docker.io/joelws/prometheus-operator:$GIT_VERSION-arm64"
+          DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate --arch arm "docker.io/joelws/prometheus-operator:$GIT_VERSION" "docker.io/joelws/prometheus-operator:$GIT_VERSION-arm"
+          DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate --arch arm64 "docker.io/joelws/prometheus-operator:$GIT_VERSION" "docker.io/joelws/prometheus-operator:$GIT_VERSION-arm64"
           DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push "docker.io/joelws/prometheus-operator:$GIT_VERSION"
 
           DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create -a "docker.io/joelws/prometheus-config-reloader:$GIT_VERSION" "docker.io/joelws/prometheus-config-reloader:$GIT_VERSION-arm" "docker.io/joelws/prometheus-config-reloader:$GIT_VERSION-arm64"
